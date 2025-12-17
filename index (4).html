@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voyager - AI Trip Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C9A227;
+            --gold-light: #E8D48A;
+            --navy: #1a2332;
+            --navy-light: #2d3a4f;
+            --cream: #FAF7F2;
+            --sand: #E8E0D5;
+        }
+        
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-body { font-family: 'DM Sans', sans-serif; }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
+        
+        .shimmer {
+            background: linear-gradient(90deg, var(--sand) 25%, var(--cream) 50%, var(--sand) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        .card-luxury {
+            background: white;
+            border: 1px solid var(--sand);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold) 0%, #D4AF37 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(201, 162, 39, 0.4);
+        }
+        
+        .btn-gold:hover {
+            box-shadow: 0 6px 25px rgba(201, 162, 39, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-navy {
+            background: var(--navy);
+            color: white;
+        }
+        
+        .input-elegant {
+            background: white;
+            border: 2px solid var(--sand);
+            transition: all 0.3s ease;
+        }
+        
+        .input-elegant:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.1);
+            outline: none;
+        }
+        
+        .day-marker {
+            background: var(--navy);
+            color: white;
+        }
+        
+        .timeline-line {
+            background: linear-gradient(180deg, var(--gold) 0%, var(--sand) 100%);
+        }
+        
+        .hotel-card {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: white;
+        }
+        
+        .cost-pill {
+            background: rgba(201, 162, 39, 0.15);
+            color: var(--gold);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+        }
+        
+        .budget-bar {
+            background: var(--sand);
+        }
+        
+        .budget-fill {
+            background: linear-gradient(90deg, #22c55e 0%, var(--gold) 80%, #ef4444 100%);
+        }
+
+        .pattern-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A227' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="min-h-screen pattern-bg">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-sand sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#C9A227] to-[#D4AF37] flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-display font-bold text-[#1a2332]">Voyager</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <!-- Hero Section -->
+        <div id="heroSection" class="text-center mb-16 animate-fadeInUp">
+            <p class="text-[#C9A227] font-semibold tracking-widest text-sm mb-4">AI-POWERED TRAVEL PLANNING</p>
+            <h2 class="text-5xl md:text-6xl font-display font-bold text-[#1a2332] mb-6">
+                Plan Your Perfect<br>
+                <span class="text-[#C9A227]">Getaway</span>
+            </h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                Tell us where you want to go, your budget, and any special requests. 
+                We'll search for real hotels, restaurants, and activities to create your ideal trip.
+            </p>
+        </div>
+
+        <!-- Input Form -->
+        <div id="inputSection" class="max-w-3xl mx-auto">
+            <div class="card-luxury rounded-3xl p-8 md:p-10">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <!-- Destination -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-[#1a2332] mb-2">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Destination(s)
+                            </span>
+                        </label>
+                        <input type="text" id="destinations" placeholder="e.g., Paris, France or Tokyo & Kyoto, Japan" 
+                            class="input-elegant w-full px-5 py-4 rounded-xl text-lg">
+                    </div>
+
+                    <!-- Budget -->
+                    <div>
+                        <label class="block text-sm font-semibold text-[#1a2332] mb-2">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Total Budget (USD)
+                            </span>
+                        </label>
+                        <input type="number" id="budget" placeholder="5000" 
+                            class="input-elegant w-full px-5 py-4 rounded-xl text-lg">
+                    </div>
+
+                    <!-- Trip Length -->
+                    <div>
+                        <label class="block text-sm font-semibold text-[#1a2332] mb-2">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Trip Length (Days)
+                            </span>
+                        </label>
+                        <input type="number" id="tripLength" placeholder="7" 
+                            class="input-elegant w-full px-5 py-4 rounded-xl text-lg">
+                    </div>
+
+                    <!-- Number of People -->
+                    <div>
+                        <label class="block text-sm font-semibold text-[#1a2332] mb-2">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Number of Travelers
+                            </span>
+                        </label>
+                        <input type="number" id="people" placeholder="2" 
+                            class="input-elegant w-full px-5 py-4 rounded-xl text-lg">
+                    </div>
+
+                    <!-- Rooms Info -->
+                    <div class="flex items-end">
+                        <p class="text-sm text-gray-500 pb-4">
+                            <svg class="w-4 h-4 inline mr-1 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            2 people per room assumed (unless specified below)
+                        </p>
+                    </div>
+
+                    <!-- Extra Details -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-[#1a2332] mb-2">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                                Special Requests (Optional)
+                            </span>
+                        </label>
+                        <textarea id="extraDetails" rows="3" 
+                            placeholder="e.g., I want at least 2 days of relaxation at the hotel, interested in food tours, avoid crowded tourist spots, need wheelchair accessibility..."
+                            class="input-elegant w-full px-5 py-4 rounded-xl resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="hidden mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm"></div>
+
+                <button onclick="planTrip()" id="planBtn"
+                    class="btn-gold w-full py-5 rounded-xl text-lg font-semibold transition-all duration-300 flex items-center justify-center gap-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                    Plan My Trip
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingSection" class="hidden max-w-3xl mx-auto text-center py-20">
+            <div class="w-20 h-20 mx-auto mb-8 relative">
+                <div class="absolute inset-0 rounded-full border-4 border-[#E8E0D5]"></div>
+                <div class="absolute inset-0 rounded-full border-4 border-[#C9A227] border-t-transparent animate-spin"></div>
+                <svg class="w-10 h-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#C9A227] animate-float" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-display font-bold text-[#1a2332] mb-3">Planning Your Adventure</h3>
+            <p class="text-gray-600">Searching for the best hotels, restaurants, and activities...</p>
+            <p class="text-sm text-gray-400 mt-2">This may take up to a minute</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </main>
+
+    <script>
+        function showError(msg) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+
+        async function planTrip() {
+            const destinations = document.getElementById('destinations').value.trim();
+            const budget = parseInt(document.getElementById('budget').value);
+            const tripLength = parseInt(document.getElementById('tripLength').value);
+            const people = parseInt(document.getElementById('people').value);
+            const extraDetails = document.getElementById('extraDetails').value.trim();
+
+            hideError();
+
+            if (!destinations) {
+                showError('Please enter a destination');
+                return;
+            }
+            if (!budget || budget < 100) {
+                showError('Please enter a valid budget (at least $100)');
+                return;
+            }
+            if (!tripLength || tripLength < 1) {
+                showError('Please enter trip length (at least 1 day)');
+                return;
+            }
+            if (!people || people < 1) {
+                showError('Please enter number of travelers');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('heroSection').classList.add('hidden');
+            document.getElementById('inputSection').classList.add('hidden');
+            document.getElementById('loadingSection').classList.remove('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/plan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ destinations, budget, tripLength, people, extraDetails })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to plan trip');
+                }
+
+                displayResults(data);
+            } catch (err) {
+                document.getElementById('heroSection').classList.remove('hidden');
+                document.getElementById('inputSection').classList.remove('hidden');
+                document.getElementById('loadingSection').classList.add('hidden');
+                showError(err.message || 'Something went wrong. Please try again.');
+            }
+        }
+
+        function displayResults(data) {
+            document.getElementById('loadingSection').classList.add('hidden');
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.remove('hidden');
+
+            const summary = data.tripSummary || {};
+            const hotels = data.hotels || [];
+            const itinerary = data.dailyItinerary || [];
+            const costs = data.costBreakdown || {};
+            const tips = data.tips || [];
+
+            const budgetPercent = Math.min(100, (summary.totalEstimatedCost / summary.budgetLimit) * 100);
+            const budgetColor = budgetPercent > 90 ? 'text-red-600' : budgetPercent > 70 ? 'text-[#C9A227]' : 'text-green-600';
+
+            resultsSection.innerHTML = `
+                <!-- Trip Summary Header -->
+                <div class="mb-10 animate-fadeInUp">
+                    <button onclick="resetPlanner()" class="mb-6 text-[#C9A227] font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Plan Another Trip
+                    </button>
+                    
+                    <div class="card-luxury rounded-3xl p-8">
+                        <p class="text-[#C9A227] font-semibold tracking-widest text-sm mb-2">YOUR TRIP TO</p>
+                        <h2 class="text-4xl font-display font-bold text-[#1a2332] mb-6">${summary.destinations || 'Your Destination'}</h2>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                            <div class="text-center p-4 bg-[#FAF7F2] rounded-xl">
+                                <div class="text-3xl font-bold text-[#1a2332]">${summary.totalDays || 0}</div>
+                                <div class="text-sm text-gray-600">Days</div>
+                            </div>
+                            <div class="text-center p-4 bg-[#FAF7F2] rounded-xl">
+                                <div class="text-3xl font-bold text-[#1a2332]">${summary.travelers || 0}</div>
+                                <div class="text-sm text-gray-600">Travelers</div>
+                            </div>
+                            <div class="text-center p-4 bg-[#FAF7F2] rounded-xl">
+                                <div class="text-3xl font-bold text-[#1a2332]">${summary.rooms || 0}</div>
+                                <div class="text-sm text-gray-600">Room${summary.rooms > 1 ? 's' : ''}</div>
+                            </div>
+                            <div class="text-center p-4 bg-[#FAF7F2] rounded-xl">
+                                <div class="text-3xl font-bold ${budgetColor}">$${(summary.totalEstimatedCost || 0).toLocaleString()}</div>
+                                <div class="text-sm text-gray-600">Total Cost</div>
+                            </div>
+                        </div>
+
+                        <!-- Budget Bar -->
+                        <div class="mb-2">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-600">Budget Used</span>
+                                <span class="font-semibold ${budgetColor}">${budgetPercent.toFixed(0)}% of $${(summary.budgetLimit || 0).toLocaleString()}</span>
+                            </div>
+                            <div class="budget-bar h-3 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-1000" 
+                                    style="width: ${budgetPercent}%; background: ${budgetPercent > 90 ? '#ef4444' : budgetPercent > 70 ? '#C9A227' : '#22c55e'}"></div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">$${((summary.budgetLimit || 0) - (summary.totalEstimatedCost || 0)).toLocaleString()} remaining for extras & emergencies</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotels -->
+                ${hotels.length > 0 ? `
+                    <div class="mb-10">
+                        <h3 class="text-2xl font-display font-bold text-[#1a2332] mb-6 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-full bg-[#1a2332] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </span>
+                            Accommodations
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            ${hotels.map(hotel => `
+                                <div class="hotel-card rounded-2xl p-6">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h4 class="text-xl font-bold">${hotel.name}</h4>
+                                            <p class="text-gray-300 text-sm">${hotel.location}</p>
+                                        </div>
+                                        ${hotel.rating ? `<span class="bg-[#C9A227] text-[#1a2332] px-2 py-1 rounded text-sm font-bold">${hotel.rating}</span>` : ''}
+                                    </div>
+                                    
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        ${(hotel.highlights || []).map(h => `
+                                            <span class="text-xs bg-white/10 px-2 py-1 rounded">${h}</span>
+                                        `).join('')}
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center text-sm mb-4">
+                                        <span class="text-gray-300">${hotel.checkIn} - ${hotel.checkOut}</span>
+                                        <span class="text-[#C9A227] font-semibold">$${hotel.pricePerNight}/night</span>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center pt-4 border-t border-white/10">
+                                        <span class="text-lg font-bold">$${hotel.totalCost} total</span>
+                                        ${hotel.bookingUrl ? `
+                                            <a href="${hotel.bookingUrl}" target="_blank" class="bg-[#C9A227] text-[#1a2332] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#E8D48A] transition-colors">
+                                                Book Now →
+                                            </a>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Daily Itinerary -->
+                <div class="mb-10">
+                    <h3 class="text-2xl font-display font-bold text-[#1a2332] mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-[#1a2332] flex items-center justify-center">
+                            <svg class="w-5 h-5 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </span>
+                        Daily Itinerary
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        ${itinerary.map((day, idx) => `
+                            <div class="card-luxury rounded-2xl overflow-hidden animate-fadeInUp" style="animation-delay: ${idx * 100}ms">
+                                <div class="bg-[#1a2332] text-white px-6 py-4 flex justify-between items-center">
+                                    <div>
+                                        <span class="text-[#C9A227] font-semibold text-sm">DAY ${day.day}</span>
+                                        <h4 class="text-xl font-bold">${day.title}</h4>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="cost-pill px-3 py-1 rounded-full text-sm font-semibold">$${day.dayTotal || 0}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <!-- Activities -->
+                                    <div class="space-y-4 mb-6">
+                                        ${(day.activities || []).map(act => `
+                                            <div class="flex gap-4 items-start">
+                                                <div class="text-sm font-semibold text-[#C9A227] w-20 flex-shrink-0">${act.time}</div>
+                                                <div class="flex-1">
+                                                    <div class="flex items-start justify-between">
+                                                        <div>
+                                                            <h5 class="font-semibold text-[#1a2332]">${act.name}</h5>
+                                                            <p class="text-sm text-gray-600">${act.description}</p>
+                                                            <p class="text-xs text-gray-400 mt-1">📍 ${act.location} • ${act.duration}</p>
+                                                        </div>
+                                                        <div class="text-right flex-shrink-0 ml-4">
+                                                            ${act.cost > 0 ? `<span class="cost-pill px-2 py-1 rounded text-sm">$${act.cost}</span>` : '<span class="text-green-600 text-sm">Free</span>'}
+                                                            ${act.url ? `<a href="${act.url}" target="_blank" class="block text-xs text-[#C9A227] hover:underline mt-1">Book →</a>` : ''}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    
+                                    <!-- Meals -->
+                                    ${(day.meals || []).length > 0 ? `
+                                        <div class="border-t border-[#E8E0D5] pt-4">
+                                            <h5 class="text-sm font-semibold text-gray-500 mb-3">MEALS</h5>
+                                            <div class="grid md:grid-cols-2 gap-4">
+                                                ${(day.meals || []).map(meal => `
+                                                    <div class="bg-[#FAF7F2] rounded-xl p-4">
+                                                        <div class="flex justify-between items-start">
+                                                            <div>
+                                                                <span class="text-xs font-semibold text-[#C9A227]">${meal.type}</span>
+                                                                <h6 class="font-semibold text-[#1a2332]">${meal.restaurant}</h6>
+                                                                <p class="text-sm text-gray-600">${meal.cuisine} • ${meal.priceRange}</p>
+                                                            </div>
+                                                            <div class="text-right">
+                                                                <span class="cost-pill px-2 py-1 rounded text-sm">~$${meal.estimatedCost}</span>
+                                                                ${meal.url ? `<a href="${meal.url}" target="_blank" class="block text-xs text-[#C9A227] hover:underline mt-1">View →</a>` : ''}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="mb-10">
+                    <h3 class="text-2xl font-display font-bold text-[#1a2332] mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-[#1a2332] flex items-center justify-center">
+                            <svg class="w-5 h-5 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                        </span>
+                        Cost Breakdown
+                    </h3>
+                    
+                    <div class="card-luxury rounded-2xl p-6">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-3 border-b border-[#E8E0D5]">
+                                <span class="text-gray-600">🏨 Accommodation</span>
+                                <span class="font-semibold">$${(costs.accommodation || 0).toLocaleString()}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-[#E8E0D5]">
+                                <span class="text-gray-600">🎯 Activities</span>
+                                <span class="font-semibold">$${(costs.activities || 0).toLocaleString()}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-[#E8E0D5]">
+                                <span class="text-gray-600">🍽️ Meals</span>
+                                <span class="font-semibold">$${(costs.meals || 0).toLocaleString()}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-[#E8E0D5]">
+                                <span class="text-gray-600">🚕 Transportation</span>
+                                <span class="font-semibold">$${(costs.transportation || 0).toLocaleString()}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 text-xl">
+                                <span class="font-bold text-[#1a2332]">Total Estimated Cost</span>
+                                <span class="font-bold text-[#C9A227]">$${(costs.total || 0).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips -->
+                ${tips.length > 0 ? `
+                    <div class="mb-10">
+                        <h3 class="text-2xl font-display font-bold text-[#1a2332] mb-6 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-full bg-[#1a2332] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-[#C9A227]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                            </span>
+                            Travel Tips
+                        </h3>
+                        
+                        <div class="card-luxury rounded-2xl p-6">
+                            <ul class="space-y-3">
+                                ${tips.map(tip => `
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-[#C9A227] mt-1">✦</span>
+                                        <span class="text-gray-700">${tip}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Plan Another Trip -->
+                <div class="text-center py-10">
+                    <button onclick="resetPlanner()" class="btn-gold px-10 py-4 rounded-xl text-lg font-semibold transition-all">
+                        Plan Another Adventure
+                    </button>
+                </div>
+            `;
+        }
+
+        function resetPlanner() {
+            document.getElementById('heroSection').classList.remove('hidden');
+            document.getElementById('inputSection').classList.remove('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('resultsSection').innerHTML = '';
+            
+            // Clear form
+            document.getElementById('destinations').value = '';
+            document.getElementById('budget').value = '';
+            document.getElementById('tripLength').value = '';
+            document.getElementById('people').value = '';
+            document.getElementById('extraDetails').value = '';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
